@@ -497,7 +497,7 @@
 
         <nav class="nav-menu">
             <div class="nav-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
-            <!-- <div class="nav-item"><i class="fas fa-exclamation-triangle"></i><span>Penalties</span></div> -->
+           <a href="/Graph"> <div class="nav-item"><i class="fas fa-exclamation-triangle"></i><span>Graph</span></div> </a>
             <a href="/traffu"><div class="nav-item"><i class="fas fa-brain"></i><span>Traffic AI</span></div></a>
             <!-- <div class="nav-item"><i class="fas fa-history"></i><span>History</span></div>
             <div class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></div> -->
@@ -564,7 +564,7 @@
                     <div><div class="detail-label">Violation</div><div class="detail-value"><%=element.violation%> </div></div>
                     <div><div class="detail-label">Officer</div><div class="detail-value"><%= element.NameAndRank %> </div></div>
                 </div>
-                <div class="amount-due"><% element.amount %>  Taka Due</div>
+                <div class="amount-due"><%= element.amount %>  Taka Due</div>
                 <button class="pay-now-btn">Pay Now</button>
             </article>
                <% }); %> 
@@ -588,7 +588,7 @@
                     <div><div class="detail-label">Violation</div><div class="detail-value"><%=element.violation%></div></div>
                     <div><div class="detail-label">Officer</div><div class="detail-value"><%= element.NameAndRank %> </div></div>
                 </div>
-                <div class="paid-stamp"><%= element.amount %>  Taka Paid</div>
+                <div class="paid-stamp"><%=element.amount%>  Taka Paid</div>
                 <div class="paid-date">Paid on via Hand</div>
             </article>
  <% }); %> 
