@@ -1,0 +1,418 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traffu | Issue Penalty</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #111111;
+      --input: #1a1a1a;
+      --border: #333333;
+      --primary: #00d9ff;
+      --success: #00ff88;
+      --danger: #ff6b6b;
+      --text: #ffffff;
+      --text-muted: #cccccc;
+      --shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+    .back-btn:hover {
+      color: var(--primary);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 38px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00d9ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--card);
+      color: var(--text-muted);
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .form-card {
+      background: var(--card);
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: linear-gradient(90deg, var(--primary), #00ff88);
+    }
+
+    .input-group {
+      position: relative;
+      margin: 24px 0;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 16px 18px;
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .input-group textarea {
+      height: 110px;
+      resize: none;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+      border-color: var(--primary);
+      background: #222222;
+      box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15);
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 18px;
+      top: 16px;
+      color: #888888;
+      font-size: 14px;
+      pointer-events: none;
+      transition: var(--transition);
+      background: var(--card);
+      padding: 0 6px;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group textarea:focus ~ label,
+    .input-group input:valid ~ label,
+    .input-group textarea:valid ~ label {
+      top: -10px;
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 20px;
+      background: linear-gradient(90deg, var(--primary), #00ff88);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 217, 255, 0.3);
+    }
+
+    .submit-btn:disabled {
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .submit-btn .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid transparent;
+      border-top: 2px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .message.show {
+      opacity: 1;
+    }
+
+    .message.success {
+      background: #002200;
+      color: var(--success);
+      border: 1px solid #004400;
+    }
+
+    .message.error {
+      background: #330000;
+      color: var(--danger);
+      border: 1px solid #660000;
+    }
+
+    .officer-info {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .officer-info span {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .officer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary);
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .form-card { padding: 30px 20px; }
+      .logo { font-size: 32px; }
+      .back-btn { top: -50px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <a href="/dashboard.html" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <div class="header">
+      <div class="logo">TRAFFU</div>
+      <div class="badge">Issue Traffic Penalty</div>
+    </div>
+
+    <div class="form-card">
+      <form id="chargeForm">
+        <div class="input-group">
+          <input type="text" id="carNumber" required />
+          <label>Car Number Plate</label>
+        </div>
+
+        <div class="input-group">
+          <input type="text" id="licenseNumber" required />
+          <label>Driving License Number</label>
+        </div>
+
+        <div class="input-group">
+          <input type="number" id="amount" min="50" required />
+          <label>Penalty Amount (Taka)</label>
+        </div>
+
+        <div class="input-group">
+          <textarea id="crime" required></textarea>
+          <label>Violation Description</label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="spinner"></span>
+          <span>Issue Penalty</span>
+        </button>
+      </form>
+
+      <div id="message" class="message">
+        <span></span>
+      </div>
+
+      <div class="officer-info">
+        <div>Logged in as: <span id="officer-name"><%=info.name%></span></div>
+        <div>Station: <span id="officer-checkpost"><%=info.checkpost%></span></div>
+        <div class="officer-badge">
+          <i class="fas fa-shield-alt"></i>
+          <span id="officer-rank"><%=info.rank%></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('chargeForm');
+    const messageEl = document.getElementById('message');
+    const messageText = messageEl.querySelector('span');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner');
+    const btnText = submitBtn.querySelector('span:last-child');
+
+    // Load officer from localStorage
+    window.addEventListener('load', () => {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user.name) {
+        alert('Please login first!');
+        window.location.href = '/login.html';
+        return;
+      }
+
+      document.getElementById('officer-name').textContent = user.name || 'Unknown Officer';
+      document.getElementById('officer-rank').textContent = user.rank || 'N/A';
+      document.getElementById('officer-checkpost').textContent = user.checkpost || 'N/A';
+    });
+
+    // Auto-format car number
+    // document.getElementById('carNumber').addEventListener('input', function(e) {
+    //   let value = e.target.value.toUpperCase().replace(/[^A-Z0-9\s-]/g, '');
+    //   if (value.length > 15) value = value.slice(0, 15);
+    //   e.target.value = value;
+    // });
+
+    // Form submit
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const data = {
+        carNumber: document.getElementById('carNumber').value.trim(),
+        licenseNumber: document.getElementById('licenseNumber').value.trim(),
+        amount: parseInt(document.getElementById('amount').value),
+        violation: document.getElementById('crime').value.trim(),
+      };
+
+      // Validate
+      if (!data.carNumber || !data.licenseNumber || !data.amount || !data.violation) {
+        showMessage('Please fill all fields', 'error');
+        return;
+      }
+
+      // UI: Loading
+      submitBtn.disabled = true;
+      spinner.style.display = 'inline-block';
+      btnText.textContent = 'Issuing...';
+      hideMessage();
+
+      try {
+        const res = await fetch('/api/penalty', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          showMessage(`Penalty of ${data.amount} Taka issued successfully!`, 'success');
+          form.reset();
+        } else {
+          throw new Error(result.message || 'Failed to issue penalty');
+        }
+      } catch (err) {
+        console.error(err);
+        showMessage(err.message || 'Network error. Try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = 'Issue Penalty';
+      }
+    });
+
+    function showMessage(text, type) {
+      messageText.innerHTML = type === 'success' 
+        ? `<i class="fas fa-check-circle"></i> ${text}`
+        : `<i class="fas fa-exclamation-triangle"></i> ${text}`;
+      messageEl.className = `message ${type} show`;
+    }
+
+    function hideMessage() {
+      messageEl.classList.remove('show');
+    }
+  </script>
+</body>
+</html>

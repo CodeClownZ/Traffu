@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Traffu - AI-Powered Traffic Intelligence</title>
+    <meta name="description" content="Traffu: Pay fines, track violations, predict patrols with AI. For drivers & police." />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    
+    <style>
+        :root {
+            --primary: #00b8ff;
+            --secondary: #0088ff;
+            --accent: #00e0ff;
+            --dark: #0a0f1a;
+            --darker: #050a12;
+            --light: #e0f2ff;
+            --gray: #2a3a50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--darker);
+            color: var(--light);
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.7;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 184, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 136, 255, 0.1) 0%, transparent 50%);
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 15, 26, 0.95);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(0, 184, 255, 0.2);
+            padding: 2rem 1.5rem;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            overflow-y: auto;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(0, 184, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 1rem;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            color: #a0c0e0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(0, 184, 255, 0.15);
+            color: var(--primary);
+            transform: translateX(8px);
+            box-shadow: 0 0 20px rgba(0, 184, 255, 0.2);
+        }
+
+        .nav-menu a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .nav-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 1100;
+            background: rgba(10, 15, 26, 0.9);
+            border: 1px solid rgba(0, 184, 255, 0.3);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 184, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary);
+            color: #000;
+            transform: rotate(90deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            transition: margin-left 0.4s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0, 184, 255, 0.03) 35px, rgba(0, 184, 255, 0.03) 70px),
+                radial-gradient(circle at center, rgba(0, 136, 255, 0.1), transparent 70%);
+            animation: pulse 8s infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent), #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 30px rgba(0, 184, 255, 0.4);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(0, 184, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 25px rgba(0, 184, 255, 0.8)); }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            color: #a0d0ff;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #000;
+            box-shadow: 0 0 25px rgba(0, 184, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 184, 255, 0.7);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 184, 255, 0.5);
+        }
+
+        /* Features */
+        .features {
+            padding: 6rem 5%;
+            background: rgba(5, 10, 18, 0.7);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            display: block;
+            margin: 1.5rem auto 0;
+            border-radius: 2px;
+            box-shadow: 0 0 15px rgba(0, 184, 255, 0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(15, 25, 40, 0.6);
+            border-radius: 18px;
+            padding: 2.2rem;
+            border: 1px solid rgba(0, 184, 255, 0.2);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 184, 255, 0.2);
+        }
+
+        .card i {
+            font-size: 2.8rem;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: #a0c0e0;
+            font-size: 1rem;
+        }
+
+        /* AI Section */
+        .ai-section {
+            padding: 6rem 5%;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(5, 10, 18, 0.9), rgba(0, 0, 0, 0.8));
+        }
+
+        .ai-dashboard {
+            max-width: 1000px;
+            margin: 3rem auto;
+            background: rgba(15, 25, 40, 0.7);
+            border-radius: 24px;
+            padding: 3rem;
+            border: 1px solid rgba(0, 184, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0, 184, 255, 0.15);
+            backdrop-filter: blur(12px);
+        }
+
+        .ai-dashboard h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-dashboard p {
+            font-size: 1.1rem;
+            color: #c0e0ff;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(5, 10, 18, 0.95);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(0, 184, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h4 {
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-col a {
+            color: #88b8e0;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 184, 255, 0.1);
+            border: 1px solid rgba(0, 184, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: #000;
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 184, 255, 0.1);
+            color: #88a0c0;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom a {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .section-title {
+                font-size: 2.3rem;
+            }
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 900;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Toggle (Mobile) -->
+    <div class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-car-side"></i> Traffu
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/Login"><i class="fas fa-user"></i> Driver Login</a></li>
+            <li><a href="/registration"><i class="fas fa-user-plus"></i> Driver Register</a></li>
+            <li><a href="/Login/police"><i class="fas fa-shield-alt"></i> Police Login</a></li>
+            <li><a href="/traffu"><i class="fas fa-brain"></i> Traffu AI</a></li>
+            <li><a href="#features"><i class="fas fa-star"></i> Features</a></li>
+            <li><a href="#ai"><i class="fas fa-robot"></i> AI Assistant</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Traffu</h1>
+            <p>The future of traffic compliance. Pay fines instantly. Predict patrols with AI. Stay safe, stay legal — with real-time intelligence.</p>
+            
+            <div class="cta-buttons">
+                <a href="/Login" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Driver Login
+                </a>
+                <a href="/Login/police" class="btn btn-secondary">
+                    <i class="fas fa-user-shield"></i> Police Login
+                </a>
+                <a href="/traffu" class="btn btn-secondary">
+                    <i class="fas fa-brain"></i> Launch AI
+                </a>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features" id="features">
+            <h2 class="section-title">Next-Gen Traffic Intelligence</h2>
+            <div class="grid">
+                <div class="card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Instant Fine Payment</h3>
+                    <p>Pay securely in seconds. Digital receipts. No paperwork. Full audit trail.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Violation Tracker</h3>
+                    <p>Timestamped logs: who, when, where. Challenge unfair fines with evidence.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI Patrol Prediction</h3>
+                    <p>Real-time heatmaps. Predictive analytics. Know before you go.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-gavel"></i>
+                    <h3>Legal AI Assistant</h3>
+                    <p>Ask rules, rights, defenses. 24/7 AI lawyer in your dashboard.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-id-badge"></i>
+                    <h3>Emergency ID</h3>
+                    <p>NID, license, vehicle data verified instantly in accidents.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h3>Police Command Center</h3>
+                    <p>Track fines, revenue, hotspots. Generate reports. Stay in control.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Section -->
+        <section class="ai-section" id="ai">
+            <h2 class="section-title">Traffu AI — Your Co-Pilot</h2>
+            <p>Powered by advanced neural networks. Learns from millions of traffic events.</p>
+            
+            <div class="ai-dashboard">
+                <h3><i class="fas fa-brain"></i> Ask. Predict. Protect.</h3>
+                <p>"Where are speed traps today?"</p>
+                <p>"Was this fine issued legally?"</p>
+                <p>"What to do if brakes fail?"</p>
+                <p><strong>Traffu AI answers instantly — with citations, steps, and confidence score.</strong></p>
+                <a href="/traffu" class="btn btn-primary" style="margin-top: 2rem; display: inline-block;">
+                    <i class="fas fa-play"></i> Open Traffu AI
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>Drivers</h4>
+                    <ul>
+                        <li><a href="/Login"><i class="fas fa-arrow-right"></i> Login</a></li>
+                        <li><a href="/traffu"><i class="fas fa-arrow-right"></i> AI Assistant</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Pay Fines</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Police</h4>
+                    <ul>
+                        <li><a href="/police/registration"><i class="fas fa-arrow-right"></i> Register</a></li>
+                        <li><a href="/Login/police"><i class="fas fa-arrow-right"></i> Login</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Issue Fine</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Privacy Policy</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Terms of Use</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/CodeClownZ/"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Traffu. All rights reserved. | Created with <i class="fas fa-code"></i> by 
+                    <a href="https://github.com/CodeClownZ/" target="_blank">CodeClownZ</a>
+                </p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.getElementById('mainContent');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Auto-hide sidebar on large screens
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>

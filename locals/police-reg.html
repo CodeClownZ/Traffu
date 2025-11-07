@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traffu - Police Registration</title>
+  <style>
+    /* EPIC DARK CYBER DESIGN */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .card {
+      background: rgba(30, 30, 50, 0.95);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 45px 35px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 188, 212, 0.3);
+      border: 1px solid rgba(0, 188, 212, 0.4);
+      animation: floatIn 1s ease-out;
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .logo h1 {
+      font-size: 2.6rem;
+      background: linear-gradient(90deg, #00bcd4, #03dac6, #00e5ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .logo p {
+      text-align: center;
+      color: #888;
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+    h2 {
+      text-align: center;
+      color: #fff;
+      margin: 25px 0 35px;
+      font-weight: 600;
+      font-size: 1.6rem;
+    }
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+    label {
+      display: block;
+      margin-bottom: 9px;
+      color: #b0bec5;
+      font-weight: 600;
+      font-size: 0.98rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 15px 16px;
+      background: rgba(50, 50, 70, 0.8);
+      border: 1px solid #444;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #00bcd4;
+      background: rgba(50, 50, 70, 1);
+      box-shadow: 0 0 18px rgba(0, 188, 212, 0.5);
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #00bcd4;
+      font-size: 1.1rem;
+      user-select: none;
+    }
+    .strength-meter {
+      height: 6px;
+      border-radius: 3px;
+      margin-top: 8px;
+      background: #333;
+      overflow: hidden;
+    }
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.4s ease;
+    }
+    .weak { background: #f44336; }
+    .fair { background: #ff9800; }
+    .good { background: #ffeb3b; }
+    .strong { background: #4caf50; }
+    .very-strong { background: #00bcd4; }
+
+    button {
+      width: 100%;
+      padding: 17px;
+      background: linear-gradient(90deg, #00bcd4, #03dac6);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 10px 25px rgba(0, 188, 212, 0.4);
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0, 188, 212, 0.6);
+    }
+    button:disabled {
+      background: #555;
+      transform: none;
+      cursor: not-allowed;
+    }
+    .login-link {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 1rem;
+    }
+    .login-link a {
+      color: #00bcd4;
+      text-decoration: none;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+    .login-link a:hover {
+      color: #03dac6;
+      text-decoration: underline;
+    }
+    #message {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 14px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .success { background: #1b5e20; border: 1px solid #4caf50; color: #c8e6c9; }
+    .error { background: #7f1d1d; border: 1px solid #f44336; color: #ffcdd2; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">
+      <h1>Traffu</h1>
+      <p>Smart Driving License Chalan System</p>
+    </div>
+    <h2>Police Officer Registration</h2>
+
+    <form id="policeRegForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="e.g. Md. Rahman Khan" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Official Email</label>
+        <input type="email" id="email" required placeholder="rahman@dmp.gov.bd" />
+      </div>
+
+      <div class="form-group">
+        <label for="checkpost">Traffic Check Post (Dhaka)</label>
+        <select id="checkpost" required>
+          <option value="" disabled selected>Select your zone</option>
+          <option value="Gulshan">Gulshan Zone</option>
+          <option value="Mahakhali">Mahakhali Zone</option>
+          <option value="Cantonment">Cantonment Zone</option>
+          <option value="Banani">Banani Zone</option>
+          <option value="Badda">Badda Zone</option>
+          <option value="Bhatara">Bhatara Zone</option>
+          <option value="Bashundhara">Bashundhara Zone</option>
+          <option value="Khilkhet">Khilkhet Zone</option>
+          <option value="Ramna">Ramna Zone</option>
+          <option value="Dhanmondi">Dhanmondi Zone</option>
+          <option value="Shabag">Shabag Zone</option>
+          <option value="Sher-e-Bangla">Sher-e-Bangla Nagar Zone</option>
+          <option value="Mirpur">Mirpur Zone</option>
+          <option value="Uttara">Uttara Zone</option>
+          <option value="Tejgaon">Tejgaon Zone</option>
+          <option value="Mohammadpur">Mohammadpur Zone</option>
+          <option value="Lalbagh">Lalbagh Zone</option>
+          <option value="Motijheel">Motijheel Zone</option>
+          <option value="Airport">Airport Zone</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="rank">Rank</label>
+        <select id="rank" required>
+          <option value="" disabled selected>Select your rank</option>
+          <option value="Constable">Constable</option>
+          <option value="ASI">Assistant Sub-Inspector (ASI)</option>
+          <option value="SI">Sub-Inspector (SI)</option>
+          <option value="Sergeant">Sergeant</option>
+          <option value="Inspector">Inspector</option>
+          <option value="ASP">Assistant Superintendent of Police (ASP)</option>
+          <option value="DSP">Deputy Superintendent of Police (DSP)</option>
+          <option value="SP">Superintendent of Police (SP)</option>
+          <option value="Additional SP">Additional SP</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" required placeholder="Minimum 8 characters" />
+          <span class="toggle-pass" onclick="togglePass('password')">Show</span>
+        </div>
+        <div class="strength-meter"><div class="strength-bar" id="strengthBar"></div></div>
+        <small id="strengthText" style="color:#888; font-size:0.8rem; margin-top:5px;">Enter a strong password</small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" required placeholder="Retype your password" />
+          <span class="toggle-pass" onclick="togglePass('confirmPassword')">Show</span>
+        </div>
+      </div>
+
+      <button type="submit">Create Police Account</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? 
+      <a href="/login/police">Login here →</a>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <script>
+    // Password Toggle
+    function togglePass(id) {
+      const input = document.getElementById(id);
+      const toggle = input.nextElementSibling;
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggle.textContent = 'Hide';
+      } else {
+        input.type = 'password';
+        toggle.textContent = 'Show';
+      }
+    }
+
+    // Password Strength
+    document.getElementById('password').addEventListener('input', function() {
+      const pass = this.value;
+      const strengthBar = document.getElementById('strengthBar');
+      const strengthText = document.getElementById('strengthText');
+      let strength = 0;
+      let feedback = '';
+
+      if (pass.length >= 8) strength++;
+      if (pass.match(/[a-z]/)) strength++;
+      if (pass.match(/[A-Z]/)) strength++;
+      if (pass.match(/[0-9]/)) strength++;
+      if (pass.match(/[^a-zA-Z0-9]/)) strength++;
+
+      strengthBar.style.width = (strength * 20) + '%';
+
+      if (strength <= 1) { strengthBar.className = 'strength-bar weak'; feedback = 'Weak'; }
+      else if (strength === 2) { strengthBar.className = 'strength-bar fair'; feedback = 'Fair'; }
+      else if (strength === 3) { strengthBar.className = 'strength-bar good'; feedback = 'Good'; }
+      else if (strength === 4) { strengthBar.className = 'strength-bar strong'; feedback = 'Strong'; }
+      else if (strength === 5) { strengthBar.className = 'strength-bar very-strong'; feedback = 'Very Strong'; }
+
+      strengthText.textContent = feedback;
+      strengthText.style.color = strength <= 2 ? '#f44336' : strength <= 3 ? '#ff9800' : '#4caf50';
+    });
+
+    // Form Submit
+    document.getElementById('policeRegForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        checkpost: document.getElementById('checkpost').value,
+        rank: document.getElementById('rank').value,
+        password: document.getElementById('password').value,
+        confirmPassword: document.getElementById('confirmPassword').value
+      };
+
+      // Client-side validation
+      if (data.password !== data.confirmPassword) {
+        showMessage('Passwords do not match!', 'error');
+        return;
+      }
+      if (data.password.length < 8) {
+        showMessage('Password must be at least 8 characters!', 'error');
+        return;
+      }
+
+      const submitBtn = this.querySelector('button');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating Account...';
+
+      try {
+        const res = await fetch('/api/reg/police', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.name,
+            email: data.email,
+            checkpost: data.checkpost,
+            rank: data.rank,
+            password: data.password
+          })
+        });
+
+        if (res.ok) {
+          showMessage('Account created successfully! Check your email for verification.', 'success');
+          this.reset();
+          document.getElementById('strengthBar').style.width = '0';
+          document.getElementById('strengthText').textContent = 'Enter a strong password';
+        } else {
+          const err = await res.json();
+          showMessage(err.message || 'Registration failed. Try again.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showMessage('Network error. Please try again later.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Police Account';
+      }
+    });
+
+    function showMessage(text, type) {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = type;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 7000);
+    }
+  </script>
+</body>
+</html>
