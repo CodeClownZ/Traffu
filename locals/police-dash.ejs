@@ -235,15 +235,9 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="/traffic-ai" class="nav-link">
+        <a href="/traffu" class="nav-link">
           <i class="fas fa-brain"></i>
           <span>Traffic AI</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="fas fa-search"></i>
-          <span>Search Vehicle</span>
         </a>
       </li>
       <li class="nav-item">
@@ -255,7 +249,7 @@
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="fas fa-sign-out-alt"></i>
-          <span onclick="Alukha ();">Logout</span>
+          <span class="logout-btn">Logout</span>
         </a>
       </li>
     </ul>
@@ -350,8 +344,9 @@
   </main>
 
   <script>
-    function Alukha () {
-       fetch("/logout/polic",{
+    document.querySelector('.logout-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch("/logout/traffu",{
                     method:"GET"
                 })
                 .then(response=>response.json())
@@ -364,7 +359,9 @@ window.location.href = '/'
                           alert("Logout unsuccessful !")
                     }
                 })
-    }
+                
+            }
+        });
     // Real-time Clock
     function updateClock() {
       const now = new Date();

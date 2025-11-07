@@ -498,7 +498,7 @@
         <nav class="nav-menu">
             <div class="nav-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
             <!-- <div class="nav-item"><i class="fas fa-exclamation-triangle"></i><span>Penalties</span></div> -->
-            <div class="nav-item"><i class="fas fa-brain"></i><span>Traffic AI</span></div>
+            <a href="/traffu"><div class="nav-item"><i class="fas fa-brain"></i><span>Traffic AI</span></div></a>
             <!-- <div class="nav-item"><i class="fas fa-history"></i><span>History</span></div>
             <div class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></div> -->
         </nav>
@@ -637,7 +637,7 @@
         window.addEventListener('resize', checkWidth);
         checkWidth();
 
-        // Logout demo
+       
         document.querySelector('.logout-btn').addEventListener('click', () => {
             if (confirm('Are you sure you want to logout?')) {
                 fetch("/logout/traffu",{
