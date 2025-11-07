@@ -294,8 +294,8 @@
         <i class="fas fa-rupee-sign"></i>
         <%
         let total = 0; 
-        PoliceObj.taka.forEach(amount => {
-          total += amount;
+        PoliceObj.taka.forEach(value => {
+          total += value.amount;
         }); %> 
         <h3>$<%=total%> </h3>
         <p>Collected</p>
