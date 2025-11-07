@@ -497,8 +497,8 @@
 
         <nav class="nav-menu">
             <div class="nav-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
-           <a href="/Graph"> <div class="nav-item"><i class="fas fa-exclamation-triangle"></i><span>Graph</span></div> </a>
-            <a href="/traffu"><div class="nav-item"><i class="fas fa-brain"></i><span>Traffic AI</span></div></a>
+           <a style="text-decoration: none;" href="/Graph"> <div class="nav-item"><i class="fas fa-exclamation-triangle"></i><span>Graph</span></div> </a>
+            <a style="text-decoration: none;" href="/traffu"><div class="nav-item"><i class="fas fa-brain"></i><span>Traffic AI</span></div></a>
             <!-- <div class="nav-item"><i class="fas fa-history"></i><span>History</span></div>
             <div class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></div> -->
         </nav>
@@ -565,7 +565,7 @@
                     <div><div class="detail-label">Officer</div><div class="detail-value"><%= element.NameAndRank %> </div></div>
                 </div>
                 <div class="amount-due"><%= element.amount %>  Taka Due</div>
-                <button class="pay-now-btn">Pay Now</button>
+                <button class="pay-now-btn" data-id="<%=element.id%>">Pay Now</button>
             </article>
                <% }); %> 
 
@@ -668,6 +668,21 @@ window.location.href = '/'
         else {
              aiMotamot.innerHTML = `<strong>Sorry some problem showed up with the AI</strong>`
         }
+      })
+       document.querySelectorAll(".pay-now-btn").forEach(value=>{
+        value.addEventListener("click",()=>{
+            const id = value.dataset.id ;
+            fetch(`/payment/${id}`,{method:"GET"})
+            .then(response=>response.json())
+            .then(info=>{
+                if(info==1) {
+                    window.location.reload();
+                }
+                else {
+                    alert("Could Not Pay")
+                }
+            })
+        })
       })
     </script>
 </body>
