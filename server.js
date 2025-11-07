@@ -374,7 +374,26 @@ Start directly with the content, no markdown, no code blocks, no explanations.`;
     });
   }
 });
- 
+
+app.get("/payment/:id",async (req,res)=>{
+ const penalty = await Penalty.findOne({"_id":req.params.id});
+ if(penalty) {
+  Penalty.findOneAndUpdate({"_id":req.params.id},{ 
+        status: 'paid',
+        paidAt: new Date() 
+      })
+      .then(info=>{
+        res.json(1)
+      })
+
+ }
+ else {
+  res.json(0)
+ }
+
+})
+
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
