@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Login successful:', result);
-                alert(result)
+                alert(result.message);
                 errorMessage.textContent = '';  // Clear error
             } else {
                 const error = await response.json();
-                alert(error);
+                alert(error.message);
                 errorMessage.textContent = error.message || 'Login failed. Please try again.';
             }
         } catch (err) {
