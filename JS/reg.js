@@ -28,10 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Login successful:', result);
-                // Redirect or handle success (e.g., window.location.href = '/dashboard');
+                alert(result)
                 errorMessage.textContent = '';  // Clear error
             } else {
                 const error = await response.json();
+                alert(error);
                 errorMessage.textContent = error.message || 'Login failed. Please try again.';
             }
         } catch (err) {
