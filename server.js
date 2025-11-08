@@ -75,7 +75,7 @@ app.get("/dashboard/police",async (req,res)=>{
     })
   }
   else {
-     res.redirect("Login/police");
+     res.redirect("../Login/police");
   }
 })
 app.get("/Login/police",(req,res)=>{
